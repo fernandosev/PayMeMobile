@@ -67,10 +67,10 @@ export default function SignUp({ navigation }) {
       <FormContainer>
         <Formik
           initialValues={{
-            name: "Fernando Severino Almeida",
-            email: "fernandosevjipa@gmail.com",
-            password: "abc12345",
-            confirPassword: "abc12345",
+            name: "",
+            email: "",
+            password: "",
+            confirPassword: "",
           }}
           onSubmit={(values) =>
             dispatch(signupRequest(values.name, values.email, values.password))
@@ -93,6 +93,7 @@ export default function SignUp({ navigation }) {
 
               <Input
                 placeholder="e.g. john@email.com"
+                autoCapitalize="none"
                 placeholderTextColor={colors.inactiveBlack}
                 color={
                   appTheme === "light" ? colors.primaryColor : colors.white
