@@ -12,14 +12,12 @@ import { Image, Dimensions } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Input from "~/components/Input";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Button from "~/components/Button";
-import { signinRequest } from "~/store/modules/user/actions";
 
 const width = Dimensions.get("screen").width;
 
 export default function SignIn({ navigation }) {
-  const dispatch = useDispatch();
   const appTheme = useSelector((state) => state.payme.theme);
   const background1 =
     appTheme === "light" ? `${colors.primaryColor}BB` : `${colors.black}BB`;
@@ -66,15 +64,12 @@ export default function SignIn({ navigation }) {
             email: "",
             password: "",
           }}
-          onSubmit={(values) =>
-            dispatch(signinRequest(values.email, values.password))
-          }
+          onSubmit={(values) => console.log(values)}
           validationSchema={() => FormSchema}
         >
           {({ values, handleChange, handleSubmit, errors, touched }) => (
             <>
               <Input
-                autoCapitalize="none"
                 placeholder="e.g. john@email.com"
                 placeholderTextColor={colors.inactiveBlack}
                 color={

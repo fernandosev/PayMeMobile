@@ -80,6 +80,7 @@ export default function SignUp({ navigation }) {
           {({ values, handleChange, handleSubmit, errors, touched }) => (
             <>
               <Input
+                autoCapitalize="words"
                 placeholder="e.g. John Doe"
                 placeholderTextColor={colors.inactiveBlack}
                 color={

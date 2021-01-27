@@ -1,11 +1,11 @@
 import produce from "immer";
 
 const INITIAL_STATE = {
-  token: null,
   name: "Fernando Severino Almeida",
   email: "fernandosevjipa@gmail.com",
   status: null,
-  loading: false,
+  token: null,
+  loadingLogin: false,
   loadingSignUp: false,
 };
 
@@ -13,7 +13,21 @@ export default function user(state = INITIAL_STATE, action) {
   return produce(state, (draft) => {
     switch (action.type) {
       case "@user/SIGNIN_REQUEST": {
-        draft.loading = true;
+        draft.loadingLogin = true;
+        break;
+      }
+
+      case "@user/SIGNIN_SUCCESS": {
+        draft.name = action.payload.name;
+        draft.email = action.payload.email;
+        draft.status = action.payload.status;
+        draft.token = action.payload.token;
+        draft.loadingLogin = false;
+        break;
+      }
+
+      case "@user/SIGNIN_FAILURE": {
+        draft.loadingLogin = false;
         break;
       }
 

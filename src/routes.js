@@ -12,17 +12,19 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Screens
-import Payment from "./screens/Payment";
-import Cards from "./screens/Cards";
-import Profile from "./screens/Profile";
-import SignIn from "./screens/SignIn";
-import SignUp from "./screens/SignUp";
+import Payment from "~/screens/Payment";
+import Cards from "~/screens/Cards";
+import Profile from "~/screens/Profile";
+import SignIn from "~/screens/SignIn";
+import SignUp from "~/screens/SignUp";
+import ValidateAccount from "~/screens/ValidateAccount";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Routes() {
   const token = useSelector((state) => state.user.token);
+  const status = useSelector((state) => state.user.status);
   return (
     <>
       <StatusBar backgroundColor={colors.primaryColor} />
@@ -38,7 +40,17 @@ export default function Routes() {
           </Stack.Navigator>
         )}
 
-        {token && (
+        {token && status !== "active" && (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="ValidateAccount" component={ValidateAccount} />
+          </Stack.Navigator>
+        )}
+
+        {token && status === "active" && (
           <Tab.Navigator
             initialRouteName="Payment"
             screenOptions={({ route }) => ({

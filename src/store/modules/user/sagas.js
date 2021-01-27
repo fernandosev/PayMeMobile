@@ -2,7 +2,12 @@ import Toast from "react-native-toast-message";
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import api from "~/services/api";
 import { navigate } from "~/services/NavigationService";
-import { signupFailure, signupSuccess } from "./actions";
+import {
+  signinFailure,
+  signupFailure,
+  signupSuccess,
+  signinSuccess,
+} from "./actions";
 
 function* signup({ payload }) {
   const { name, email, password } = payload;
@@ -38,4 +43,47 @@ function* signup({ payload }) {
   }
 }
 
-export default all([takeLatest("@user/SIGNUP_REQUEST", signup)]);
+function* signin({ payload }) {
+  const { email, password } = payload;
+
+  const body = {
+    email,
+    password,
+  };
+
+  try {
+    const response = yield call(api.post, `/signin`, body);
+
+    console.log(response.data);
+
+    yield put(
+      signinSuccess(
+        response.data.name,
+        response.data.email,
+        response.data.status,
+        response.data.token
+      )
+    );
+
+    // Toast.show({
+    //   text1: "Success!",
+    //   text2: response.data.messageEN,
+    //   position: "bottom",
+    //   type: "success",
+    // });
+  } catch (err) {
+    Toast.show({
+      text1: "Error!",
+      text2: err.response.data.errorMessageEN,
+      position: "bottom",
+      type: "error",
+    });
+
+    yield put(signinFailure());
+  }
+}
+
+export default all([
+  takeLatest("@user/SIGNUP_REQUEST", signup),
+  takeLatest("@user/SIGNIN_REQUEST", signin),
+]);

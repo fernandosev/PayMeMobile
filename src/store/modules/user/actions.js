@@ -1,7 +1,20 @@
-export function signinRequest(email = "", password = "") {
+export function signinRequest(email, password) {
   return {
     type: "@user/SIGNIN_REQUEST",
     payload: { email, password },
+  };
+}
+
+export function signinSuccess(name, email, status, token) {
+  return {
+    type: "@user/SIGNIN_SUCCESS",
+    payload: { name, email, status, token },
+  };
+}
+
+export function signinFailure() {
+  return {
+    type: "@user/SIGNIN_FAILURE",
   };
 }
 
