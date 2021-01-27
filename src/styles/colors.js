@@ -11,6 +11,8 @@ export default {
 
   transparent: "#00000000",
 
+  darkGolden: "#B8860B",
+
   // status
   danger: "#DD1111",
   warning: "#FAA200",

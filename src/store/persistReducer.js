@@ -6,7 +6,7 @@ export default (reducers) => {
     {
       key: "PayMe",
       storage: AsyncStorage,
-      whitelist: ["user"],
+      whitelist: ["user", "card"],
     },
     reducers
   );

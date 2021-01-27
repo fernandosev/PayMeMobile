@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
+import Toast from "react-native-toast-message";
 import {
   Container,
   FormContainer,
   Title,
-  RegisterContainer,
-  Register,
+  BackButton,
+  BackButtonIcon,
 } from "./styles";
 import { SvgXml } from "react-native-svg";
 import colors from "~/styles/colors";
@@ -12,13 +13,16 @@ import { Image, Dimensions } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Input from "~/components/Input";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "~/components/Button";
+import { signupRequest } from "~/store/modules/user/actions";
 
 const width = Dimensions.get("screen").width;
 
-export default function SignIn({ navigation }) {
+export default function SignUp({ navigation }) {
+  const dispatch = useDispatch();
   const appTheme = useSelector((state) => state.payme.theme);
+  const loadingSignUp = useSelector((state) => state.user.loadingSignUp);
   const background1 =
     appTheme === "light" ? `${colors.primaryColor}BB` : `${colors.black}BB`;
   const background2 =
@@ -48,27 +52,45 @@ export default function SignIn({ navigation }) {
   );
 
   const FormSchema = Yup.object().shape({
-    email: Yup.string().email().required("The email is required."),
-    password: Yup.string().required("The password is required."),
+    name: Yup.string().required("Your name is required."),
+    email: Yup.string().email().required("Your email is required."),
+    password: Yup.string().required("Your password is required.").min(6),
+    confirPassword: Yup.string()
+      .required("The password confirmation is required.")
+      .oneOf([Yup.ref("password"), null], "Passwords must match."),
   });
 
   return (
     <Container appTheme={appTheme} keyboardShouldPersistTaps="handled">
       <SvgImage />
 
-      <Title appTheme={appTheme}>Welcome to PayMe</Title>
-
       <FormContainer>
         <Formik
           initialValues={{
-            email: "",
-            password: "",
+            name: "Fernando Severino Almeida",
+            email: "fernandosevjipa@gmail.com",
+            password: "abc12345",
+            confirPassword: "abc12345",
           }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) =>
+            dispatch(signupRequest(values.name, values.email, values.password))
+          }
           validationSchema={() => FormSchema}
         >
           {({ values, handleChange, handleSubmit, errors, touched }) => (
             <>
+              <Input
+                placeholder="e.g. John Doe"
+                placeholderTextColor={colors.inactiveBlack}
+                color={
+                  appTheme === "light" ? colors.primaryColor : colors.white
+                }
+                value={values.name}
+                onChangeText={handleChange("name")}
+                title="Name"
+                errorText={errors.name && touched.name ? errors.name : null}
+              />
+
               <Input
                 placeholder="e.g. john@email.com"
                 placeholderTextColor={colors.inactiveBlack}
@@ -95,21 +117,39 @@ export default function SignIn({ navigation }) {
                 }
               />
 
-              <Button
-                text="Sign In"
-                background={colors.primaryColor}
-                icon="ios-enter-outline"
-                loading={false}
-                action={handleSubmit}
+              <Input
+                secureTextEntry
+                placeholderTextColor={colors.inactiveBlack}
+                color={
+                  appTheme === "light" ? colors.primaryColor : colors.white
+                }
+                value={values.confirPassword}
+                onChangeText={handleChange("confirPassword")}
+                title="Confirm your password"
+                errorText={
+                  errors.confirPassword && touched.confirPassword
+                    ? errors.confirPassword
+                    : null
+                }
               />
 
-              <RegisterContainer onPress={() => navigation.navigate("SignUp")}>
-                <Register>Create an account</Register>
-              </RegisterContainer>
+              <Button
+                text="Register"
+                background={colors.primaryColor}
+                icon="person-add-outline"
+                loading={loadingSignUp}
+                action={handleSubmit}
+              />
             </>
           )}
         </Formik>
       </FormContainer>
+
+      <BackButton onPress={() => navigation.goBack()}>
+        <BackButtonIcon />
+      </BackButton>
+
+      <Title appTheme={appTheme}>Create your account</Title>
     </Container>
   );
 }

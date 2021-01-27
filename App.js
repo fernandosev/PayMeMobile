@@ -1,6 +1,11 @@
 import React from "react";
 import PayMe from "./src";
+import { AppearanceProvider } from "react-native-appearance";
 
 export default function App() {
-  return <PayMe />;
+  return (
+    <AppearanceProvider>
+      <PayMe />
+    </AppearanceProvider>
+  );
 }

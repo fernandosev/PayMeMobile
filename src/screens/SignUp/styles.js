@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Ionicons } from "@expo/vector-icons";
 import colors from "~/styles/colors";
 
 export const Container = styled.ScrollView.attrs({
@@ -27,15 +28,23 @@ export const FormContainer = styled.View`
   width: 100%;
 `;
 
-export const RegisterContainer = styled.TouchableOpacity`
-  width: 100%;
-  margin-top: 20px;
+export const BackButton = styled.TouchableOpacity.attrs({
+  elevation: 20,
+})`
+  width: 50px;
+  height: 50px;
+  background-color: ${(props) =>
+    props.background ? props.background : colors.primaryColor};
+  border-radius: 25px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  align-items: center;
+  justify-content: center;
 `;
 
-export const Register = styled.Text`
-  text-align: center;
-  color: ${(props) => (props.color ? props.color : colors.primaryColor)};
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: underline;
-`;
+export const BackButtonIcon = styled(Ionicons).attrs({
+  size: 28,
+  color: colors.white,
+  name: "arrow-back-outline",
+})``;
