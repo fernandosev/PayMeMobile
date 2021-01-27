@@ -37,5 +37,5 @@ export const Register = styled.Text`
   color: ${(props) => (props.color ? props.color : colors.primaryColor)};
   font-size: 20px;
   font-weight: bold;
-  text-decoration: underline;
+  text-decoration: ${(props) => (props.underline ? "underline" : "none")};
 `;

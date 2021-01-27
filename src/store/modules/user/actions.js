@@ -5,10 +5,10 @@ export function signinRequest(email, password) {
   };
 }
 
-export function signinSuccess(name, email, status, token) {
+export function signinSuccess(id, name, email, status, token) {
   return {
     type: "@user/SIGNIN_SUCCESS",
-    payload: { name, email, status, token },
+    payload: { id, name, email, status, token },
   };
 }
 
@@ -34,5 +34,25 @@ export function signupSuccess() {
 export function signupFailure() {
   return {
     type: "@user/SIGNUP_FAILURE",
+  };
+}
+
+export function validateAccountRequest(code) {
+  return {
+    type: "@user/VALIDATE_ACCOUNT_REQUEST",
+    payload: { code },
+  };
+}
+
+export function validateAccountSuccess(status) {
+  return {
+    type: "@user/VALIDATE_ACCOUNT_SUCCESS",
+    payload: { status },
+  };
+}
+
+export function validateAccountFailure() {
+  return {
+    type: "@user/VALIDATE_ACCOUNT_FAILURE",
   };
 }

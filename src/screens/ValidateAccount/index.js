@@ -12,13 +12,21 @@ import { Image, Dimensions } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Input from "~/components/Input";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "~/components/Button";
+import {
+  signinSuccess,
+  validateAccountRequest,
+} from "~/store/modules/user/actions";
 
 const width = Dimensions.get("screen").width;
 
 export default function SignIn({ navigation }) {
+  const dispatch = useDispatch();
   const appTheme = useSelector((state) => state.payme.theme);
+  const loadingValidateAccount = useSelector(
+    (state) => state.user.loadingValidateAccount
+  );
   const background1 =
     appTheme === "light" ? `${colors.primaryColor}BB` : `${colors.black}BB`;
   const background2 =
@@ -48,64 +56,52 @@ export default function SignIn({ navigation }) {
   );
 
   const FormSchema = Yup.object().shape({
-    email: Yup.string().email().required("The email is required."),
-    password: Yup.string().required("The password is required."),
+    code: Yup.string().required("The code is required."),
   });
 
   return (
     <Container appTheme={appTheme} keyboardShouldPersistTaps="handled">
       <SvgImage />
 
-      <Title appTheme={appTheme}>Welcome to PayMe</Title>
+      <Title appTheme={appTheme}>Validate your account</Title>
 
       <FormContainer>
         <Formik
           initialValues={{
-            email: "",
-            password: "",
+            code: "",
           }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) => dispatch(validateAccountRequest(values.code))}
           validationSchema={() => FormSchema}
         >
           {({ values, handleChange, handleSubmit, errors, touched }) => (
             <>
               <Input
-                placeholder="e.g. john@email.com"
+                keyboardType="numeric"
+                maxLength={5}
                 placeholderTextColor={colors.inactiveBlack}
                 color={
                   appTheme === "light" ? colors.primaryColor : colors.white
                 }
-                value={values.email}
-                onChangeText={handleChange("email")}
-                title="Email"
-                errorText={errors.email && touched.email ? errors.email : null}
-              />
-
-              <Input
-                secureTextEntry
-                placeholderTextColor={colors.inactiveBlack}
-                color={
-                  appTheme === "light" ? colors.primaryColor : colors.white
-                }
-                value={values.password}
-                onChangeText={handleChange("password")}
-                title="Password"
-                errorText={
-                  errors.password && touched.password ? errors.password : null
-                }
+                value={values.code}
+                onChangeText={handleChange("code")}
+                title="Code"
+                errorText={errors.code && touched.code ? errors.code : null}
               />
 
               <Button
-                text="Sign In"
+                placeholder="e.g. 00000"
+                text="Validate"
                 background={colors.primaryColor}
-                icon="ios-enter-outline"
-                loading={false}
+                icon="md-shield-checkmark-outline"
+                loading={loadingValidateAccount}
                 action={handleSubmit}
               />
 
-              <RegisterContainer onPress={() => navigation.navigate("SignUp")}>
-                <Register>Create an account</Register>
-              </RegisterContainer>
+              {/* <RegisterContainer onPress={() => navigation.navigate("SignUp")}>
+                <Register>
+                  Resend code to <Register underline>{email}</Register>
+                </Register>
+              </RegisterContainer> */}
             </>
           )}
         </Formik>

@@ -1,12 +1,14 @@
 import produce from "immer";
 
 const INITIAL_STATE = {
-  name: "Fernando Severino Almeida",
-  email: "fernandosevjipa@gmail.com",
+  id: null,
+  name: "",
+  email: "",
   status: null,
   token: null,
   loadingLogin: false,
   loadingSignUp: false,
+  loadingValidateAccount: false,
 };
 
 export default function user(state = INITIAL_STATE, action) {
@@ -18,6 +20,7 @@ export default function user(state = INITIAL_STATE, action) {
       }
 
       case "@user/SIGNIN_SUCCESS": {
+        draft.id = action.payload.id;
         draft.name = action.payload.name;
         draft.email = action.payload.email;
         draft.status = action.payload.status;
@@ -43,6 +46,22 @@ export default function user(state = INITIAL_STATE, action) {
 
       case "@user/SIGNUP_FAILURE": {
         draft.loadingSignUp = false;
+        break;
+      }
+
+      case "@user/VALIDATE_ACCOUNT_REQUEST": {
+        draft.loadingValidateAccount = true;
+        break;
+      }
+
+      case "@user/VALIDATE_ACCOUNT_SUCCESS": {
+        draft.status = action.payload.status;
+        draft.loadingValidateAccount = false;
+        break;
+      }
+
+      case "@user/VALIDATE_ACCOUNT_FAILURE": {
+        draft.loadingValidateAccount = false;
         break;
       }
     }

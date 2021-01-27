@@ -7,6 +7,8 @@ import {
   signupFailure,
   signupSuccess,
   signinSuccess,
+  validateAccountSuccess,
+  validateAccountFailure,
 } from "./actions";
 
 function* signup({ payload }) {
@@ -54,10 +56,9 @@ function* signin({ payload }) {
   try {
     const response = yield call(api.post, `/signin`, body);
 
-    console.log(response.data);
-
     yield put(
       signinSuccess(
+        response.data.id,
         response.data.name,
         response.data.email,
         response.data.status,
@@ -83,7 +84,43 @@ function* signin({ payload }) {
   }
 }
 
+function* validateAccount({ payload }) {
+  const { code } = payload;
+  const token = yield select((state) => state.user.token);
+  const id = yield select((state) => state.user.id);
+
+  api.defaults.headers["access-token"] = token;
+
+  const body = {
+    id,
+    code: Number(code),
+  };
+
+  try {
+    const response = yield call(api.post, `/validateUser`, body);
+
+    yield put(validateAccountSuccess(response.data.status));
+
+    Toast.show({
+      text1: "Success!",
+      text2: response.data.messageEN,
+      position: "bottom",
+      type: "success",
+    });
+  } catch (err) {
+    Toast.show({
+      text1: "Error!",
+      text2: err.response.data.errorMessageEN,
+      position: "bottom",
+      type: "error",
+    });
+
+    yield put(validateAccountFailure());
+  }
+}
+
 export default all([
   takeLatest("@user/SIGNUP_REQUEST", signup),
   takeLatest("@user/SIGNIN_REQUEST", signin),
+  takeLatest("@user/VALIDATE_ACCOUNT_REQUEST", validateAccount),
 ]);
